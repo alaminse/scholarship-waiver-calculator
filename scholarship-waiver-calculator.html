@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<title>Scholarship Form</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="theme.css">
+		<link href="https://fonts.googleapis.com/css?family=Cuprum&display=swap" rel="stylesheet">
+
+		<style>
+
+			body
+			{
+				font-family: 'Cuprum', sans-serif;
+				font-size: 16px;
+			}
+
+			.form{
+				padding: 20px;
+				border: 2px solid #ddd;
+			}
+
+			.container{
+
+				margin: 0 auto;
+				width: 50%;
+			}
+
+			.container h1{
+
+				color: green;
+				border-bottom: 2px solid #ddd;
+			}
+
+
+
+			input[type=text], input[type=number], input[type=date], select{
+
+				font-family: 'Cuprum', sans-serif;
+				padding: 8px;
+				width: 95%;
+				border: 1px solid #ddd;
+				font-weight: bold;
+				border-radius: 4px;
+			}
+
+			select{
+
+				width: 98%;
+			}
+
+			ul, li{
+
+				list-style: none;
+				padding: 0;
+			}
+
+			.label {
+				margin-bottom: 5px;
+				font-weight: bold;
+			}
+
+			.divs {
+				margin-bottom: 15px;
+			}
+
+			.btns_divs{
+				display: flex;
+			}
+
+			.btn1{
+				margin-right: 20px;
+			}
+
+			.btn{
+
+				background-color: MediumSeaGreen;
+				padding: 15px 45px;
+				color: white;
+				border: none;
+				font-weight: bold;
+				font-size: 12px;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			.btn:hover{
+
+				background-color: DodgerBlue;
+				color: white;
+			}
+
+
+			#show_payAmount, #show_percentage{
+				display: none;
+			}
+
+			#success{
+
+				margin-bottom: 20px;
+				font-size: 16px;
+				color: MediumSeaGreen;
+				font-weight: bold;
+			}
+
+			#failed{
+
+				margin-bottom: 20px;
+				font-size: 16px;
+				color: #8C182B;
+				font-weight: bold;
+			}
+
+			#warning{
+
+				margin-bottom: 20px;
+				font-size: 16px;
+				color: #ffc107;
+				font-weight: bold;
+				font-weight: bold;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Scholarship/Waiver calculator</h1>
+
+			<div class="divs">
+				<div id="success"></div>
+				<div id="failed"></div>
+				<div id="warning"></div>
+			</div>
+
+			<div class="form">
+				<form method="" action="#" name="eligibility">
+
+					<div class="divs">
+						<div class="label">
+							<label>Select Your campus</label>
+						</div>
+						<div class="inputs">
+							<select required  id="campus">
+								<option value="main">Main Campus</option>
+								<option value="permanent">Permanent Campus</option>
+								<option value="uttara">Uttara Campus</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="divs">
+						<div class="label"> <label>Enter SGPA</label> </div>
+						<div class="inputs">
+							<input type="text" placeholder="SGPA of last semester" required id="sgpa"/>
+						</div>
+					</div>
+
+
+					<div class="divs">
+						<div class="label"><label>Do you want to know how much you need to pay?</label></div>
+						<div class="inputs">
+							<input type="checkbox" onchange="check_pay()" id="pay" value="yes" data=""/>Yes
+						</div>
+					</div>
+
+					<div class="divs" id="show_payAmount">
+						<div><label class="label">Enter total amount shown on student portal</label></div>
+						<div class="inputs">
+							<input type="text" placeholder="Enter the amount" required id="pay_amount"/>
+						</div>
+					</div>
+
+					<div class="divs" >
+						<div><label class="label">Do you have previous scholarship on your H.Sc Result</label></div>
+						<div class="inputs">
+							<ul>
+								<li><input type="radio" onchange="hsc_scholar()" id="scholar1" value=""/>Yes</li>
+								<li><input type="radio" onchange="hsc_scholar()" id="scholar2" value=""/>No</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="divs" id="show_percentage">
+						<div><label class="label">If Yes then how much?(in percentage)</label></div>
+						<div class="inputs">
+							<input type="text" placeholder="Enter the percentage" required id="percentage"/>
+						</div>
+					</div>
+
+					<div class="btns_divs">
+						<div class="btn1">
+							<button type="submit" onclick="checkScholarship()" id="check_Scholar" class="btn">Calculate the Scholatship</button>
+						</div>
+
+						<div class="">
+							<button type="submit" onclick="calculateAmount()" id="check_amount" class="btn">Calculate the Amount</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+
+		<script>
+
+			var payValue = "";
+			var scholarship = "";
+			var campuVal = "";
+			var scholarshipPercentage = 0;
+
+			function check_pay(){
+
+				var pay = document.getElementById("pay");
+
+				if(pay.getAttribute("data") == ""){
+					pay.setAttribute("data", "1");
+					pay.setAttribute('checked', 'checked');
+					payValue = "yes";
+					document.getElementById('show_payAmount').style.display='block';
+				}
+				else{
+					pay.setAttribute("data", "");
+					pay.removeAttribute('checked');
+					payValue = "no";
+					document.getElementById('show_payAmount').style.display='none';
+				}
+			}
+
+
+			function hsc_scholar()
+			{
+				var scholar1 = document.querySelector('input[id="scholar1"]');
+				var scholar2 = document.querySelector('input[id="scholar2"]');
+
+				//console.log(scholar1);
+
+				if(scholar1.getAttribute("value") == ""){
+					scholar2.checked = false;
+					scholar1.setAttribute("value", "1");
+					scholar2.setAttribute("value", "");
+					scholarship = "yes";
+					document.getElementById('show_percentage').style.display='block';
+
+				}else if(scholar2.getAttribute("value") == ""){
+					scholar1.checked = false;
+					scholar1.setAttribute("value", "");
+					scholar2.setAttribute("value", "1");
+					scholarship = "no";
+					document.getElementById('show_percentage').style.display='none';
+				}
+			}
+
+
+			function checkScholarship()
+			{
+				var campus     = document.getElementById("campus");
+					campuVal   = campus.options[campus.selectedIndex].value;
+				var sgpa       = document.getElementById("sgpa").value;
+				var percentage = document.getElementById("percentage").value;
+				var msg = "";
+
+				if(sgpa == 4.00)
+				{
+					msg = "Congrats you are eligible for 50% Scholarship";
+					scholarshipPercentage = 50;
+
+				}else if(sgpa >= 3.90 && sgpa <= 3.99){
+
+					msg = "Congrats you are eligible for 30% Scholarship";
+					scholarshipPercentage = 30;
+
+				}else if(sgpa >= 3.85 && sgpa <= 3.89){
+
+					msg = "Congrats you are eligible for 20% Scholarship";
+					scholarshipPercentage = 20;
+
+				}else if(sgpa >= 3.80 && sgpa <= 3.84){
+qlarship";
+					scholarshipPercentage = 10;
+				}
+
+				if(scholarship == "yes")
+				{
+					alert(scholarshipPercentage);
+					if(scholarshipPercentage < percentage && sgpa < 3.00){
+
+						msg = "Congrats you are eligible for "+percentage+"% Scholarship";
+						scholarshipPercentage = percentage;
+
+					}else if(scholarshipPercentage < percentage && sgpa >= 3.00 && sgpa < 3.50){
+
+						msg = "Congrats you are eligible for "+percentage+"% Scholarship";
+						scholarshipPercentage = percentage;
+
+					}else if(scholarshipPercentage < percentage && sgpa >= 3.50){
+
+						msg = "Congrats you are eligible for "+percentage+"% Scholarship";
+						scholarshipPercentage = percentage;
+					}
+				}
+
+				if(campuVal == "main")
+					scholarshipPercentage += 5;
+
+				if(msg == "" && campuVal != "main")
+					document.getElementById("failed").innerHTML = "Sorry you are not eligible for Scholarship";
+				else
+					document.getElementById("success").innerHTML = msg;
+			}
+
+
+			function calculateAmount(){
+
+				checkScholarship();
+
+				var pay_amount = document.getElementById("pay_amount").value;
+
+				if(payValue == "yes")
+				{
+					if(scholarshipPercentage == 0 && campuVal != "main")
+						document.getElementById("failed").innerHTML = "You haven't any Scholarship. You have to pay "+pay_amount+" BDT";
+					else{
+						var PayAmounts = pay_amount - ((scholarshipPercentage/100)*pay_amount);
+						document.getElementById("success").innerHTML = "You got "+scholarshipPercentage+"% Scholarship. You have to pay "+PayAmounts+" BDT";
+					}
+				}
+			}
+
+		</script>
+
+	</body>
+
+</html>
